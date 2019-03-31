@@ -48,7 +48,6 @@ class DDQNAgent(RLDebugger):
 
     # get action from model using greedy policy
     def get_action(self, state):
-        # TODO add the exploration
         if random.random() < self.epsilon:
             return random.randrange(self.action_size)
         q_value = self.model.predict(state)
@@ -56,7 +55,6 @@ class DDQNAgent(RLDebugger):
 
     # decay epsilon
     def update_epsilon(self):
-        # TODO write the code for your decay
         self.t += 1
         self.epsilon = self.epsilon_min + max(0., (self.epsilon_max - self.epsilon_min) *
                                               (self.epsilon_decay_len - max(0.,
@@ -103,5 +101,4 @@ class DDQNAgent(RLDebugger):
         return (states, actions, rewards, next_states, dones)
 
     def update_target_model(self):
-        # TODO copy weights from the model used for action selection to the model used for computing targets
         self.target_model.set_weights(self.model.get_weights())

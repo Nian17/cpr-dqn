@@ -15,7 +15,7 @@ class DDQNAgent(RLDebugger):
         self.state_size = observation_space[0]
         self.action_size = action_space
         # hyper parameters
-        self.learning_rate = .01
+        self.learning_rate = .00025
         self.model = self.build_model()
         self.target_model = self.model
         self.gamma = 0.999
@@ -23,12 +23,12 @@ class DDQNAgent(RLDebugger):
         self.epsilon = 1.
         self.t = 0
         self.epsilon_min = 0.1
-        self.n_first_exploration_steps = 1500
-        self.epsilon_decay_len = 500000
+        self.n_first_exploration_steps = 5500
+        self.epsilon_decay_len = 3000000
         self.batch_size = 32
         self.train_start = 64
         # create replay memory using deque
-        self.memory = deque(maxlen=1000000)
+        self.memory = deque(maxlen=100000)
         self.target_model = self.build_model(trainable=False)
 
     # approximate Q function using Neural Network
@@ -37,10 +37,10 @@ class DDQNAgent(RLDebugger):
         model = Sequential()
         # This is a simple one hidden layer model, thought it should be enough here,
         # it is much easier to train with different achitectures (stack layers, change activation)
-        model.add(Dense(64, input_dim=self.state_size, activation='relu', trainable=trainable))
-        model.add(Dense(64, activation='relu', trainable=trainable))
-        model.add(Dense(self.action_size, activation='linear', trainable=trainable))
-        model.compile(loss='mse', optimizer=Adam(lr=self.learning_rate))
+        model.add(Dense(256, input_dim=self.state_size, activation='relu', trainable=trainable))
+        model.add(Dense(256, activation='relu', trainable=trainable))
+        model.add(Dense(self.action_size, activation='relu', trainable=trainable))
+        model.compile(loss='mse', optimizer=RMSprop(lr=self.learning_rate, rho=0.95, epsilon=0.01))
         model.summary()
         # 1/ You can try different losses. As an logcosh loss is a twice differenciable approximation of Huber loss
         # 2/ From a theoretical perspective Learning rate should decay with time to guarantee convergence
@@ -57,9 +57,8 @@ class DDQNAgent(RLDebugger):
     def update_epsilon(self):
         self.t += 1
         self.epsilon = self.epsilon_min + max(0., (self.epsilon_max - self.epsilon_min) *
-                                              (self.epsilon_decay_len - max(0.,
-                                                                            self.t - self.n_first_exploration_steps)) / self.epsilon_decay_len)
-        # self.learning_rate = self.learning_rate**np.sqrt(self.t-self.n_first_exploration_steps) if self.t > self.n_first_exploration_steps else self.learning_rate
+                            (self.epsilon_decay_len - max(0.,
+                                     self.t - self.n_first_exploration_steps)) / self.epsilon_decay_len)
 
     # train the target network on the selected action and transition
     def train_model(self, action, state, next_state, reward, done):

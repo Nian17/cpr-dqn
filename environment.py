@@ -68,7 +68,8 @@ class GameEnv:
             grid_reset[i[0]][i[1]] = CellType.APPLE
         for agent in agent_list:
             grid_reset[agent.get_front_player(env_x_size=24, env_y_size=7)[0]][agent.get_front_player(env_x_size=24, env_y_size=7)[1]] = CellType.AGENT_FRONT
-            grid_reset[agent.x][agent.y] = CellType.OPPONENT
+        grid_reset[self.agent1.x][self.agent1.y] = CellType.PLAYER
+            #grid_reset[agent.x][agent.y] = CellType.OPPONENT
         #if beam_set_list:
          #   for beam in beam_set_list:
           #      grid_reset[beam[0]][beam[1]] = CellType.BEAM
@@ -208,7 +209,8 @@ class GameEnv:
         for agent in agent_list:
             if not agent.is_hidden():
                 grid_step[agent.get_front_player(env_x_size=24, env_y_size=7)[0]][agent.get_front_player(env_x_size=24, env_y_size=7)[1]] = CellType.AGENT_FRONT
-                grid_step[agent.x][agent.y] = CellType.OPPONENT
+                #grid_step[agent.x][agent.y] = CellType.OPPONENT
+        grid_step[self.agent1.x][self.agent1.y] = CellType.PLAYER
         #if beam_set_list:
          #   for beam in beam_set_list:
           #      grid_step[beam[0]][beam[1]] = CellType.BEAM

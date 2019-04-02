@@ -24,7 +24,7 @@ class DDQNAgent(RLDebugger):
         self.t = 0
         self.epsilon_min = 0.1
         self.n_first_exploration_steps = 5500
-        self.epsilon_decay_len = 3000000
+        self.epsilon_decay_len = 5000000
         self.batch_size = 32
         self.train_start = 64
         # create replay memory using deque
@@ -40,7 +40,7 @@ class DDQNAgent(RLDebugger):
         model.add(Dense(256, input_dim=self.state_size, activation='relu', trainable=trainable))
         model.add(Dense(256, activation='relu', trainable=trainable))
         model.add(Dense(self.action_size, activation='relu', trainable=trainable))
-        model.compile(loss='mse', optimizer=RMSprop(lr=self.learning_rate, rho=0.95, epsilon=0.01))
+        model.compile(loss='mse', optimizer=Adam(lr=self.learning_rate))
         model.summary()
         # 1/ You can try different losses. As an logcosh loss is a twice differenciable approximation of Huber loss
         # 2/ From a theoretical perspective Learning rate should decay with time to guarantee convergence

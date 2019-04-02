@@ -10,7 +10,7 @@ state_size = observation_space.shape[0]
 last_rewards = []
 episode = 0
 max_episode_len = 1000
-while episode < 10100:
+while episode < 20100:
     episode += 1
     state = env.reset()
     state = np.reshape(state, [1, state_size])

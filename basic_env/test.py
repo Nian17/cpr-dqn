@@ -34,8 +34,8 @@ while episode < 1000:
         terminal = (step >= max_episode_len)
         if done or terminal:
             last_rewards.append(total_reward)
-            if episode % 2 == 0:
-                agent.update_target_model()
+            #if episode % 2 == 0:
+            agent.update_target_model()
             gameover = True
 
     print('episode:', episode, 'cumulative reward: ', total_reward, 'epsilon:', agent.epsilon, 'step', step)

@@ -77,7 +77,7 @@ mean_rew = []
 while c <= len(last_rewards):
         mean_rew.append(np.mean(last_rewards[c-10:c]))
         c+=1
-plt.plot([i for i in range(len(mean_rew))], h, label='DQN; last 10 average')
+plt.plot([i for i in range(len(mean_rew))], mean_rew, label='DQN; last 10 average')
 plt.xlabel('episode')
 plt.ylabel('average reward')
 plt.title("DQN training")

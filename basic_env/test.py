@@ -10,7 +10,11 @@ state_size = observation_space.shape[0]
 last_rewards = []
 episode = 0
 max_episode_len = 1000
+print(50*'#')
+print("Printing agent's hyperparameters:")
+print('Learning rate:', agent.learning_rate, 'Batch size:', agent.batch_size, 'Eps decay len:', agent.epsilon_decay_len)
 print("UPDATE EVERY 3")
+print(50*'#')
 while episode < 1500:
     episode += 1
     state = env.reset()

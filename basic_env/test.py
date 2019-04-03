@@ -10,7 +10,7 @@ state_size = observation_space.shape[0]
 last_rewards = []
 episode = 0
 max_episode_len = 1000
-print("UPDATE EVERY 4")
+print("UPDATE EVERY 2")
 while episode < 1000:
     episode += 1
     state = env.reset()
@@ -35,7 +35,7 @@ while episode < 1000:
         terminal = (step >= max_episode_len)
         if done or terminal:
             last_rewards.append(total_reward)
-            if episode % 4 == 0:
+            if episode % 2 == 0:
                 agent.update_target_model()
             gameover = True
 
@@ -71,4 +71,16 @@ for i in range(100):
     print('episode:', i, 'cumulative reward: ', total_reward, 'epsilon:', agent.epsilon, 'step', step)
 print(50*'#')
 print('Average evaluation reward', np.mean(eval_rewards))
+
+c=10
+mean_rew = []
+while c <= len(last_rewards):
+        mean_rew.append(np.mean(last_rewards[c-10:c]))
+        c+=1
+plt.plot([i for i in range(len(mean_rew))], h, label='DQN; last 10 average')
+plt.xlabel('episode')
+plt.ylabel('average reward')
+plt.title("DQN training")
+plt.legend()
+plt.show()
 

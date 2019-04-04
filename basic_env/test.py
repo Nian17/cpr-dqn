@@ -15,7 +15,7 @@ print("Printing agent's hyperparameters:")
 print('Learning rate:', agent.learning_rate, 'Batch size:', agent.batch_size, 'Eps decay len:', agent.epsilon_decay_len)
 print("UPDATE EVERY 3")
 print(50*'#')
-while episode < 1500:
+while episode < 20000:
     episode += 1
     state = env.reset()
     state = np.reshape(state, [1, state_size])

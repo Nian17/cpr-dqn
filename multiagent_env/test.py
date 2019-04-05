@@ -20,7 +20,7 @@ while episode < 20000:
     state = env.reset()
     state = np.reshape(state, [1, state_size])
     #if episode % 100 == 0:
-        #env.render_env()
+     #   env.render_env()
     total_reward = 0
 
     step = 0
@@ -28,7 +28,7 @@ while episode < 20000:
     while not gameover:
         step += 1
         #if episode % 100 == 0:
-            #env.render_env()
+         #   env.render_env()
         action = agent.get_action(state)
         reward, next_state, done = env.step(action)
         next_state = np.reshape(next_state, [1, state_size])

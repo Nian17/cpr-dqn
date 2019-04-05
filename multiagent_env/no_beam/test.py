@@ -4,8 +4,8 @@ from environment import *
 env = GameEnv()
 observation_space = env.reset()
 
-agent1 = DDQNAgent(observation_space[0].shape, 8)
-agent2 = DDQNAgent(observation_space[0].shape, 8)
+agent1 = DDQNAgent(observation_space[0].shape, 7)
+agent2 = DDQNAgent(observation_space[0].shape, 7)
 
 agents = [agent1, agent2]
 
@@ -23,7 +23,7 @@ while episode < 2000:
     state = env.reset()
     state_n = [np.reshape(i, [1, state_size]) for i in state]
     #if episode % 100 == 0:
-    #env.render_env()
+    env.render_env()
     agent1_reward = 0
     agent2_reward = 0
     cumulative_reward = 0
@@ -33,7 +33,7 @@ while episode < 2000:
     while not gameover:
         step += 1
         #if episode % 100 == 0:
-        #env.render_env()
+        env.render_env()
         action_n = [agent.get_action(state) for agent, state in zip(agents, state_n)]
         reward, next_state, done = env.step(action_n)
         next_state = [np.reshape(i, [1, state_size]) for i in next_state]

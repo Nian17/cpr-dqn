@@ -143,7 +143,7 @@ class RLDebugger:
                     target = target[0]
                 if len(target_val.shape) > 1 and target_val.shape[1] > 1:
                     target_val = target_val[0]
-                assert target.shape[0] == 8, state
+                assert target.shape[0] == 7, state
                 self.traces += ('value_estimation', target[action])
                 self.traces += ('value_prediction', target_val[action])
                 self.traces += ('bellman_residual', target[action] - target_val[action] - reward)

@@ -15,10 +15,10 @@ class DDQNAgent(RLDebugger):
         self.state_size = observation_space[0]
         self.action_size = action_space
         # hyper parameters
-        self.learning_rate = .000005
+        self.learning_rate = .00001
         self.model = self.build_model()
         self.target_model = self.model
-        self.gamma = 0.99
+        self.gamma = 0.995
         self.epsilon_max = 1.
         self.epsilon = 1.
         self.t = 0

@@ -19,7 +19,7 @@ print("Printing agent's hyperparameters:")
 print('Learning rate:', agent1.learning_rate, 'Batch size:', agent1.batch_size, 'Eps decay len:', agent1.epsilon_decay_len)
 print("UPDATE EVERY 3")
 print(50*'#')
-while episode < 3:
+while episode < 8000:
     episode += 1
     state = env.reset()
     state_n = [np.reshape(i, [1, state_size]) for i in state]
@@ -53,7 +53,8 @@ while episode < 3:
                 agent2.update_target_model()
             gameover = True
 
-    print('episode:', episode, 'cumulative reward: ', cumulative_reward, 'epsilon:', agent1.epsilon, 'step', step)
+    print('episode:', episode, 'cumulative reward: ', cumulative_reward, 'agent1 rew:', agent1_reward,
+          'agent2 rew:', agent2_reward, 'step', step)
 
 np.savetxt("rewards.txt", last_rewards, fmt='%10d', header="   cum_rew   agent1_rew  agent2_rew")
 '''
@@ -69,7 +70,6 @@ for i in range(100):
     # if episode % 100 == 0:
     #   env.render_env()
     total_reward = 0
-
     step = 0
     gameover = False
     while not gameover:
@@ -83,11 +83,9 @@ for i in range(100):
         if done or terminal:
             eval_rewards.append(total_reward)
             gameover = True
-
     print('episode:', i, 'cumulative reward: ', total_reward, 'epsilon:', agent.epsilon, 'step', step)
 print(50*'#')
 print('Average evaluation reward', np.mean(eval_rewards))
-
 c=10
 mean_rew = []
 while c <= len(last_rewards):

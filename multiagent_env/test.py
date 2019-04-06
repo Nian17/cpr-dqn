@@ -1,50 +1,62 @@
 from dqn_agent import *
 from environment import *
+import numpy as np
 
 env = GameEnv()
 observation_space = env.reset()
 
-agent = DDQNAgent(observation_space.shape, 7)
+agent1 = DDQNAgent(observation_space[0].shape, 8)
+agent2 = DDQNAgent(observation_space[0].shape, 8)
 
-state_size = observation_space.shape[0]
+agents = [agent1, agent2]
+
+state_size = observation_space[0].shape[0]
 last_rewards = []
 episode = 0
 max_episode_len = 1000
 print(50*'#')
 print("Printing agent's hyperparameters:")
-print('Learning rate:', agent.learning_rate, 'Batch size:', agent.batch_size, 'Eps decay len:', agent.epsilon_decay_len)
+print('Learning rate:', agent1.learning_rate, 'Batch size:', agent1.batch_size, 'Eps decay len:', agent1.epsilon_decay_len)
 print("UPDATE EVERY 3")
 print(50*'#')
-while episode < 20000:
+while episode < 80000:
     episode += 1
     state = env.reset()
-    state = np.reshape(state, [1, state_size])
+    state_n = [np.reshape(i, [1, state_size]) for i in state]
     #if episode % 100 == 0:
-     #   env.render_env()
-    total_reward = 0
+    #env.render_env()
+    agent1_reward = 0
+    agent2_reward = 0
+    cumulative_reward = 0
 
     step = 0
     gameover = False
     while not gameover:
         step += 1
         #if episode % 100 == 0:
-         #   env.render_env()
-        action = agent.get_action(state)
-        reward, next_state, done = env.step(action)
-        next_state = np.reshape(next_state, [1, state_size])
-        total_reward += reward
-        agent.train_model(action, state, next_state, reward, done)
-        agent.update_epsilon()
-        state = next_state
+        #env.render_env()
+        action_n = [agent.get_action(state) for agent, state in zip(agents, state_n)]
+        reward, next_state, done = env.step(action_n)
+        next_state = [np.reshape(i, [1, state_size]) for i in next_state]
+        agent1_reward += reward[0]
+        agent2_reward += reward[1]
+        cumulative_reward += reward[0] + reward[1]
+        for i, agent in enumerate(agents):
+            agent.train_model(action_n[i], state_n[i], next_state[i], reward[i], done)
+            agent.update_epsilon()
+        state_n = next_state
         terminal = (step >= max_episode_len)
         if done or terminal:
-            last_rewards.append(total_reward)
+            last_rewards.append([agent1_reward, agent2_reward, cumulative_reward])
             if episode % 3 == 0:
-                agent.update_target_model()
+                agent1.update_target_model()
+                agent2.update_target_model()
             gameover = True
 
-    print('episode:', episode, 'cumulative reward: ', total_reward, 'epsilon:', agent.epsilon, 'step', step)
+    print('episode:', episode, 'cumulative reward: ', cumulative_reward, 'epsilon:', agent1.epsilon, 'step', step)
 
+np.savetxt("rewards.txt", last_rewards, fmt='%10d', header="   cum_rew   agent1_rew  agent2_rew")
+'''
 print(50*'#')
 print('Average training reward', np.mean(last_rewards))
 print('** EVALUATION PHASE **')
@@ -86,4 +98,4 @@ plt.xlabel('episode')
 plt.ylabel('average reward')
 plt.title("DQN training")
 plt.legend()
-plt.show()
+plt.show()'''

@@ -1,5 +1,6 @@
 from dqn_agent import *
 from environment import *
+import numpy as np
 
 env = GameEnv()
 observation_space = env.reset()
@@ -18,7 +19,7 @@ print("Printing agent's hyperparameters:")
 print('Learning rate:', agent1.learning_rate, 'Batch size:', agent1.batch_size, 'Eps decay len:', agent1.epsilon_decay_len)
 print("UPDATE EVERY 3")
 print(50*'#')
-while episode < 8000:
+while episode < 3:
     episode += 1
     state = env.reset()
     state_n = [np.reshape(i, [1, state_size]) for i in state]
@@ -53,6 +54,8 @@ while episode < 8000:
             gameover = True
 
     print('episode:', episode, 'cumulative reward: ', cumulative_reward, 'epsilon:', agent1.epsilon, 'step', step)
+
+np.savetxt("rewards.txt", last_rewards, fmt='%10d', header="   cum_rew   agent1_rew  agent2_rew")
 '''
 print(50*'#')
 print('Average training reward', np.mean(last_rewards))

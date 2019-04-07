@@ -14,7 +14,6 @@ class GameEnv:
         self.objects = []
         self.agent_hidden = agent_hidden
         # self.food_hidden = food_hidden
-
         # 0: forward, 1: backward, 2: left, 3: right
         # 4: turn lelf, 5:turn right, 6: beam, 7: stay
         self.action_num = 7
@@ -90,11 +89,13 @@ class GameEnv:
         self.agent1_beam_set = []
         self.agent2_beam_set = []
 
-
+        untagged = 0
         if not self.agent1.is_hidden():
+            untagged +=1
             agent1_action_return = self.agent1_actions[action_n[0]](env_x_size=self.size_x, env_y_size=self.size_y)
             self.agent1_beam_set = [] if action_n[0] != 6 else agent1_action_return
         if not self.agent2.is_hidden():
+            untagged += 1
             agent2_action_return = self.agent2_actions[action_n[1]](env_x_size=self.size_x, env_y_size=self.size_y)
             self.agent2_beam_set = [] if action_n[1] != 6 else agent2_action_return
 
@@ -190,7 +191,7 @@ class GameEnv:
         rew_n = [agent1_reward, agent2_reward]
         obs_n = [convert_observation_to_rgb(agent1_obs), convert_observation_to_rgb(agent2_obs)]
 
-        return rew_n, obs_n, done
+        return rew_n, obs_n, done, untagged
 
     def contribute_matrix(self):
         a = np.ones([self.size_y + 2, self.size_x + 2, 3])

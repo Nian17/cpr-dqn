@@ -1,4 +1,4 @@
-from dqn_agent import *
+from ddqn_agent import *
 from environment import *
 import numpy as np
 
@@ -19,12 +19,10 @@ print("Printing agent's hyperparameters:")
 print('Learning rate:', agent1.learning_rate, 'Batch size:', agent1.batch_size, 'Eps decay len:', agent1.epsilon_decay_len)
 print("UPDATE EVERY 3")
 print(50*'#')
-while episode < 8000:
+while episode < 8001:
     episode += 1
     state = env.reset()
     state_n = [np.reshape(i, [1, state_size]) for i in state]
-    #if episode % 100 == 0:
-    #env.render_env()
     agent1_reward = 0
     agent2_reward = 0
     cumulative_reward = 0
@@ -33,10 +31,8 @@ while episode < 8000:
     gameover = False
     while not gameover:
         step += 1
-        #if episode % 100 == 0:
-        #env.render_env()
         action_n = [agent.get_action(state) for agent, state in zip(agents, state_n)]
-        reward, next_state, done = env.step(action_n)
+        reward, next_state, done, untagged = env.step(action_n)
         next_state = [np.reshape(i, [1, state_size]) for i in next_state]
         agent1_reward += reward[0]
         agent2_reward += reward[1]
@@ -47,7 +43,7 @@ while episode < 8000:
         state_n = next_state
         terminal = (step >= max_episode_len)
         if done or terminal:
-            last_rewards.append([agent1_reward, agent2_reward, cumulative_reward])
+            last_rewards.append([agent1_reward, agent2_reward, cumulative_reward, action_n[0], action_n[1], untagged])
             if episode % 3 == 0:
                 agent1.update_target_model()
                 agent2.update_target_model()
@@ -56,7 +52,7 @@ while episode < 8000:
     print('episode:', episode, 'cumulative reward: ', cumulative_reward, 'agent1 rew:', agent1_reward,
           'agent2 rew:', agent2_reward, 'step', step)
 
-np.savetxt("rewards.txt", last_rewards, fmt='%10d', header="   cum_rew   agent1_rew  agent2_rew")
+np.savetxt("rewards.txt", last_rewards, fmt='%10d', header="   agent1_rew  agent2_rew   cum_rew   action1   action2  untagged   ")
 '''
 print(50*'#')
 print('Average training reward', np.mean(last_rewards))

@@ -1,4 +1,4 @@
-from dqn_agent import *
+from ddqn_agent import *
 from environment import *
 
 env = GameEnv()
@@ -19,16 +19,16 @@ while episode < 20000:
     episode += 1
     state = env.reset()
     state = np.reshape(state, [1, state_size])
-    #if episode % 100 == 0:
-     #   env.render_env()
+    if episode > 800:
+        env.render_env()
     total_reward = 0
 
     step = 0
     gameover = False
     while not gameover:
         step += 1
-        #if episode % 100 == 0:
-         #   env.render_env()
+        if episode > 800:
+            env.render_env()
         action = agent.get_action(state)
         reward, next_state, done = env.step(action)
         next_state = np.reshape(next_state, [1, state_size])
@@ -54,8 +54,6 @@ agent.epsilon = 0
 for i in range(100):
     state = env.reset()
     state = np.reshape(state, [1, state_size])
-    # if episode % 100 == 0:
-    #   env.render_env()
     total_reward = 0
 
     step = 0

@@ -1,4 +1,4 @@
-from ddqn_agent import *
+from dqn_agent import *
 from environment import *
 import numpy as np
 
@@ -19,10 +19,12 @@ print("Printing agent's hyperparameters:")
 print('Learning rate:', agent1.learning_rate, 'Batch size:', agent1.batch_size, 'Eps decay len:', agent1.epsilon_decay_len)
 print("UPDATE EVERY 3")
 print(50*'#')
-while episode < 8001:
+while episode < 3:
     episode += 1
     state = env.reset()
     state_n = [np.reshape(i, [1, state_size]) for i in state]
+    #if episode % 100 == 0:
+    #env.render_env()
     agent1_reward = 0
     agent2_reward = 0
     cumulative_reward = 0
@@ -31,8 +33,10 @@ while episode < 8001:
     gameover = False
     while not gameover:
         step += 1
+        #if episode % 100 == 0:
+        #env.render_env()
         action_n = [agent.get_action(state) for agent, state in zip(agents, state_n)]
-        reward, next_state, done, untagged = env.step(action_n)
+        reward, next_state, done = env.step(action_n)
         next_state = [np.reshape(i, [1, state_size]) for i in next_state]
         agent1_reward += reward[0]
         agent2_reward += reward[1]
@@ -43,16 +47,15 @@ while episode < 8001:
         state_n = next_state
         terminal = (step >= max_episode_len)
         if done or terminal:
-            last_rewards.append([agent1_reward, agent2_reward, cumulative_reward, action_n[0], action_n[1], untagged])
+            last_rewards.append([agent1_reward, agent2_reward, cumulative_reward])
             if episode % 3 == 0:
                 agent1.update_target_model()
                 agent2.update_target_model()
             gameover = True
 
-    print('episode:', episode, 'cumulative reward: ', cumulative_reward, 'agent1 rew:', agent1_reward,
-          'agent2 rew:', agent2_reward, 'step', step)
+    print('episode:', episode, 'cumulative reward: ', cumulative_reward, 'epsilon:', agent1.epsilon, 'step', step)
 
-np.savetxt("rewards.txt", last_rewards, fmt='%10d', header="   agent1_rew  agent2_rew   cum_rew   action1   action2  untagged   ")
+np.savetxt("rewards.txt", last_rewards, fmt='%10d', header="   cum_rew   agent1_rew  agent2_rew")
 '''
 print(50*'#')
 print('Average training reward', np.mean(last_rewards))
@@ -66,6 +69,7 @@ for i in range(100):
     # if episode % 100 == 0:
     #   env.render_env()
     total_reward = 0
+
     step = 0
     gameover = False
     while not gameover:
@@ -79,9 +83,11 @@ for i in range(100):
         if done or terminal:
             eval_rewards.append(total_reward)
             gameover = True
+
     print('episode:', i, 'cumulative reward: ', total_reward, 'epsilon:', agent.epsilon, 'step', step)
 print(50*'#')
 print('Average evaluation reward', np.mean(eval_rewards))
+
 c=10
 mean_rew = []
 while c <= len(last_rewards):

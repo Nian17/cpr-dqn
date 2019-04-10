@@ -44,7 +44,7 @@ while episode < 20000:
             gameover = True
 
     print('episode:', episode, 'cumulative reward: ', total_reward, 'epsilon:', agent.epsilon, 'step', step)
-
+'''
 print(50*'#')
 print('Average training reward', np.mean(last_rewards))
 print('** EVALUATION PHASE **')
@@ -87,4 +87,4 @@ plt.ylabel('average reward')
 plt.title("DQN training")
 plt.legend()
 plt.show()
-
+'''

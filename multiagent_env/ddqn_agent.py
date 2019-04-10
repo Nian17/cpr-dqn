@@ -15,18 +15,18 @@ class DDQNAgent(RLDebugger):
         self.state_size = observation_space[0]
         self.action_size = action_space
         # hyper parameters
-        self.learning_rate = .00025
+        self.learning_rate = .00001
         self.model = self.build_model()
         self.target_model = self.model
-        self.gamma = 0.995
+        self.gamma = 0.999
         self.epsilon_max = 1.
         self.epsilon = 1.
         self.t = 0
         self.epsilon_min = 0.1
         self.n_first_exploration_steps = 800
         self.epsilon_decay_len = 500000
-        self.batch_size = 64
-        self.train_start = 128
+        self.batch_size = 8
+        self.train_start = 16
         # create replay memory using deque
         self.memory = deque(maxlen=100000)
         self.target_model = self.build_model(trainable=False)
@@ -35,15 +35,12 @@ class DDQNAgent(RLDebugger):
     # state is input and Q Value of each action is output of network
     def build_model(self, trainable=True):
         model = Sequential()
-        # This is a simple one hidden layer model, thought it should be enough here,
-        # it is much easier to train with different achitectures (stack layers, change activation)
         model.add(Dense(32, input_dim=self.state_size, activation='relu', trainable=trainable))
         model.add(Dense(32, activation='relu', trainable=trainable))
         model.add(Dense(self.action_size, activation='relu', trainable=trainable))
         model.compile(loss='mse', optimizer=Adam(lr=self.learning_rate))
         model.summary()
-        # 1/ You can try different losses. As an logcosh loss is a twice differenciable approximation of Huber loss
-        # 2/ From a theoretical perspective Learning rate should decay with time to guarantee convergence
+
         return model
 
     # get action from model using greedy policy

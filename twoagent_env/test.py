@@ -6,6 +6,9 @@ env = GameEnv()
 observation_space = env.reset()
 
 agent1 = DDQNAgent(observation_space[0].shape, 8)
+agent2 = DDQNAgent(observation_space[0].shape, 8)
+
+agents = [agent1, agent2]
 
 state_size = observation_space[0].shape[0]
 last_rewards = []
@@ -19,7 +22,7 @@ print(50*'#')
 while episode < 6001:
     episode += 1
     state = env.reset()
-    state = np.reshape(state[0], [1, state_size])
+    state_n = [np.reshape(i, [1, state_size]) for i in state]
     agent1_reward = 0
     agent2_reward = 0
     cumulative_reward = 0
@@ -28,21 +31,22 @@ while episode < 6001:
     gameover = False
     while not gameover:
         step += 1
-        action_1 = agent1.get_action(state)
-        action_2 = np.random.randint(8)
-        reward, next_state, done, untagged = env.step([action_1, action_2])
-        next_state = np.reshape(next_state[0], [1, state_size])
+        action_n = [agent.get_action(state) for agent, state in zip(agents, state_n)]
+        reward, next_state, done, untagged = env.step(action_n)
+        next_state = [np.reshape(i, [1, state_size]) for i in next_state]
         agent1_reward += reward[0]
         agent2_reward += reward[1]
         cumulative_reward += reward[0] + reward[1]
-        agent1.train_model(action_1, state, next_state, reward[0], done)
-        agent1.update_epsilon()
-        state = next_state
+        for i, agent in enumerate(agents):
+            agent.train_model(action_n[i], state_n[i], next_state[i], reward[i], done)
+            agent.update_epsilon()
+        state_n = next_state
         terminal = (step >= max_episode_len)
         if done or terminal:
-            last_rewards.append([agent1_reward, agent2_reward, cumulative_reward, action_1, action_2, untagged])
+            last_rewards.append([agent1_reward, agent2_reward, cumulative_reward, action_n[0], action_n[1], untagged])
             if episode % 3 == 0:
                 agent1.update_target_model()
+                agent2.update_target_model()
             gameover = True
 
     print('episode:', episode, 'cumulative reward: ', cumulative_reward, 'agent1 rew:', agent1_reward,

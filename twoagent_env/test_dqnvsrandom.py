@@ -48,7 +48,7 @@ while episode < 6001:
     print('episode:', episode, 'cumulative reward: ', cumulative_reward, 'agent1 rew:', agent1_reward,
           'agent2 rew:', agent2_reward, 'step', step)
 
-np.savetxt("rewards.txt", last_rewards, fmt='%10d', header="   agent1_rew  agent2_rew   cum_rew   action1   action2  untagged   ")
+np.savetxt("rewards_dqnvsrandom.txt", last_rewards, fmt='%10d', header="   agent1_rew  agent2_rew   cum_rew   action1   action2  untagged   ")
 '''
 print(50*'#')
 print('Average training reward', np.mean(last_rewards))

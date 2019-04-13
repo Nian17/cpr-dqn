@@ -23,6 +23,9 @@ print("UPDATE EVERY 3")
 print(50*'#')
 while episode < 6100:
     episode += 1
+    #if episode > 1000:
+     #   if episode < 1006:
+      #      env.render_env()
     state = env.reset()
     state_n = [np.reshape(i, [1, state_size]) for i in state]
     agent1_reward = 0
@@ -36,6 +39,9 @@ while episode < 6100:
     gameover = False
     while not gameover:
         step += 1
+        #if episode > 1000:
+         #   if episode < 1006:
+          #      env.render_env()
         action_n = [agent.get_action(state) for agent, state in zip(agents, state_n)]
         reward, next_state, done, untagged = env.step(action_n)
         next_state = [np.reshape(i, [1, state_size]) for i in next_state]
@@ -61,7 +67,7 @@ while episode < 6100:
             gameover = True
 
     print('ep:', episode, 'cum rew: ', cumulative_reward, 'a1:', agent1_reward,
-          'a2:', agent2_reward,'a3:', agent3_reward, 'a4:', agent4_reward, 'step', step)
+          'a2:', agent2_reward,'a3:', agent3_reward, 'a4:', agent4_reward, 'step', step, 'sum_untagged:', untagged_sum)
 
 np.savetxt("rewards_multi.txt", last_rewards, fmt='%10d', header="    a1_rew     a2_rew     a3_rew     a4_rew     cum_rew    action1    action2    action3    action4   untagged   step")
 '''

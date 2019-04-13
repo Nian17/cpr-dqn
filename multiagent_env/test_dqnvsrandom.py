@@ -6,11 +6,6 @@ env = GameEnv()
 observation_space = env.reset()
 
 agent1 = DDQNAgent(observation_space[0].shape, 8)
-agent2 = DDQNAgent(observation_space[0].shape, 8)
-agent3 = DDQNAgent(observation_space[0].shape, 8)
-agent4 = DDQNAgent(observation_space[0].shape, 8)
-
-agents = [agent1, agent2, agent3, agent4]
 
 state_size = observation_space[0].shape[0]
 last_rewards = []
@@ -21,47 +16,39 @@ print("Printing agent's hyperparameters:")
 print('Learning rate:', agent1.learning_rate, 'Batch size:', agent1.batch_size, 'Eps decay len:', agent1.epsilon_decay_len)
 print("UPDATE EVERY 3")
 print(50*'#')
-while episode < 6100:
+while episode < 6001:
     episode += 1
     state = env.reset()
-    state_n = [np.reshape(i, [1, state_size]) for i in state]
+    state = np.reshape(state[0], [1, state_size])
     agent1_reward = 0
     agent2_reward = 0
-    agent3_reward = 0
-    agent4_reward = 0
     cumulative_reward = 0
 
     step = 0
     gameover = False
     while not gameover:
         step += 1
-        action_n = [agent.get_action(state) for agent, state in zip(agents, state_n)]
-        reward, next_state, done, untagged = env.step(action_n)
-        next_state = [np.reshape(i, [1, state_size]) for i in next_state]
+        action_1 = agent1.get_action(state)
+        action_2 = np.random.randint(8)
+        reward, next_state, done, untagged = env.step([action_1, action_2])
+        next_state = np.reshape(next_state[0], [1, state_size])
         agent1_reward += reward[0]
         agent2_reward += reward[1]
-        agent3_reward += reward[2]
-        agent4_reward += reward[3]
-        cumulative_reward += sum(reward)
-        for i, agent in enumerate(agents):
-            agent.train_model(action_n[i], state_n[i], next_state[i], reward[i], done)
-            agent.update_epsilon()
-        state_n = next_state
+        cumulative_reward += reward[0] + reward[1]
+        agent1.train_model(action_1, state, next_state, reward[0], done)
+        agent1.update_epsilon()
+        state = next_state
         terminal = (step >= max_episode_len)
         if done or terminal:
-            last_rewards.append([agent1_reward, agent2_reward, agent3_reward, agent4_reward, cumulative_reward,
-                                 action_n[0], action_n[1], action_n[2], action_n[3], untagged])
+            last_rewards.append([agent1_reward, agent2_reward, cumulative_reward, action_1, action_2, untagged])
             if episode % 3 == 0:
                 agent1.update_target_model()
-                agent2.update_target_model()
-                agent3.update_target_model()
-                agent4.update_target_model()
             gameover = True
 
-    print('ep:', episode, 'cum rew: ', cumulative_reward, 'a1:', agent1_reward,
-          'a2:', agent2_reward,'a3:', agent3_reward, 'a4:', agent4_reward, 'step', step)
+    print('episode:', episode, 'cumulative reward: ', cumulative_reward, 'agent1 rew:', agent1_reward,
+          'agent2 rew:', agent2_reward, 'step', step)
 
-np.savetxt("rewards_multi.txt", last_rewards, fmt='%10d', header="    a1_rew     a2_rew     a3_rew     a4_rew     cum_rew    action1    action2    action3    action4   untagged   ")
+np.savetxt("rewards.txt", last_rewards, fmt='%10d', header="   agent1_rew  agent2_rew   cum_rew   action1   action2  untagged   ")
 '''
 print(50*'#')
 print('Average training reward', np.mean(last_rewards))

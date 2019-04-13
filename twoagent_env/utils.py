@@ -132,7 +132,7 @@ class RLDebugger:
         self.traces += ('action', action)
         if len(state.shape) > 1 and state.shape[1] > 1:
             state = state[0]
-        assert state.shape[0] == 315, state
+        assert state.shape[0] == 195, state
         self.traces += ('state-x', state[0])
         self.traces += ('state-x-deriv', state[1])
         self.traces += ('state-theta', state[2])

@@ -135,25 +135,14 @@ class AgentObj:
                     beam_set = [(i + 1, self.y + j) for i in range(self.x, env_x_size-1) for j in
                                 range(-1, 2)]
         elif self.direction == 1:
-            if self.y <= 5:
-                if (self.x-2) < 0:
-                    beam_set = [(self.x+j, i - 1) for i in range(self.y, 0, -1) for j in
+            if (self.x-1) < 0:
+                beam_set = [(self.x+j, i - 1) for i in range(self.y, 0, -1) for j in
                                 range(-self.x, 2)]
-                elif (self.x+2) > (env_x_size-1):
-                    beam_set = [(self.x + j, i - 1) for i in range(self.y, 0, -1) for j in
+            elif (self.x+1) > (env_x_size-1):
+                beam_set = [(self.x + j, i - 1) for i in range(self.y, 0, -1) for j in
                                 range(-1, env_x_size - self.x)]
-                else:
-                    beam_set = [(self.x + j, i - 1) for i in range(self.y, 0, -1) for j in
-                                range(-1, 2)]
             else:
-                if (self.x-2) < 0:
-                    beam_set = [(self.x+j, i - 1) for i in range(self.y-5, self.y+1) for j in
-                                range(-self.x, 2)]
-                elif (self.x+2) > (env_x_size-1):
-                    beam_set = [(self.x + j, i - 1) for i in range(self.y-5, self.y+1) for j in
-                                range(-1, env_x_size - self.x)]
-                else:
-                    beam_set = [(self.x + j, i - 1) for i in range(self.y-5, self.y+1) for j in
+                beam_set = [(self.x + j, i - 1) for i in range(self.y, 0, -1) for j in
                                 range(-1, 2)]
         elif self.direction == 2:
             if (self.x-6) < 0:
@@ -168,34 +157,23 @@ class AgentObj:
                                 range(-1, 2)]
             else:
                 if (self.y-1) < 0:
-                    beam_set = [(i - 1, self.y + j) for i in range(self.x - 5, self.x+1) for j in
+                    beam_set = [(i - 1, self.y + j) for i in range(self.x - 6, self.x+1) for j in
                                 range(-self.y, 2)]
                 elif (self.y+1) > (env_y_size-1):
-                    beam_set = [(i - 1, self.y + j) for i in range(self.x - 5, self.x+1) for j in
+                    beam_set = [(i - 1, self.y + j) for i in range(self.x - 6, self.x+1) for j in
                                 range(-1, env_y_size - self.y)]
                 else:
-                    beam_set = [(i - 1, self.y + j) for i in range(self.x - 5, self.x+1) for j in
+                    beam_set = [(i - 1, self.y + j) for i in range(self.x - 6, self.x+1) for j in
                                 range(-1, 2)]
         elif self.direction == 3:
-            if self.y >= 6:
-                if (self.x - 1) < 0:
-                    beam_set = [(self.x + j, i + 1) for i in range(self.y, env_y_size - 1) for j in
+            if (self.x - 1) < 0:
+                beam_set = [(self.x + j, i + 1) for i in range(self.y, env_y_size - 1) for j in
                                 range(-self.x, 2)]
-                elif (self.x+1) > (env_x_size-1):
-                    beam_set = [(self.x + j, i + 1) for i in range(self.y, env_y_size - 1) for j in
+            elif (self.x+1) > (env_x_size-1):
+                beam_set = [(self.x + j, i + 1) for i in range(self.y, env_y_size - 1) for j in
                                 range(-1, env_x_size - self.x)]
-                else:
-                    beam_set = [(self.x + j, i + 1) for i in range(self.y, env_y_size-1) for j in
-                                range(-1, 2)]
             else:
-                if (self.x - 1) < 0:
-                    beam_set = [(self.x + j, i + 1) for i in range(self.y, self.y+6) for j in
-                                range(-self.x, 2)]
-                elif (self.x+1) > (env_x_size-1):
-                    beam_set = [(self.x + j, i + 1) for i in range(self.y, self.y+6) for j in
-                                range(-1, env_x_size - self.x)]
-                else:
-                    beam_set = [(self.x + j, i + 1) for i in range(self.y, self.y+6) for j in
+                beam_set = [(self.x + j, i + 1) for i in range(self.y, env_y_size-1) for j in
                                 range(-1, 2)]
         else:
             assert self.direction in range(4), 'wrong direction'
@@ -227,86 +205,58 @@ class AgentObj:
     def partial_observation(self, env_x_size, env_y_size, grid, obs_rows, obs_cols):
         grid[self.x][self.y] = CellType.PLAYER
         obs = np.full([obs_rows, obs_cols], "#", dtype=object)
-        cols = (int(obs_cols / 2))
         if self.direction == 0:
-            if self.x + obs_rows <= env_x_size:
-                if self.y <= 4:
-                    obs[:, cols - self.y:] = grid[self.x:self.x + obs_rows, :self.y + cols + 1]
-                elif self.y >= 7:
-                    obs[:, :env_y_size - self.y + cols] = grid[self.x:self.x + obs_rows, self.y - cols:]
-                else:
-                    obs[:, cols - self.y:env_y_size - self.y + cols] = grid[self.x:self.x + obs_rows, :]
+            if self.x+obs_rows <= env_x_size:
+                obs[:, (int(obs_cols / 2)) - self.y:obs_cols - self.y] = grid[self.x:self.x + obs_rows, :]
             else:
-                if self.y <= 4:
-                    obs[:(env_x_size - self.x), cols - self.y:] = grid[self.x:, :self.y + cols + 1]
-                elif self.y >= 7:
-                    obs[:(env_x_size - self.x), :env_y_size - self.y + cols] = grid[self.x:, self.y - cols:]
-                else:
-                    obs[:(env_x_size - self.x), cols - self.y:env_y_size - self.y + cols] = grid[self.x:, :]
+                obs[:(env_x_size - self.x), (int(obs_cols / 2)) - self.y:obs_cols - self.y] = grid[self.x:, :]
         elif self.direction == 1:
-            if self.y <= obs_rows-2:
-                if self.x - cols < 0:
-                    obs[:self.y + 1, cols - self.x:] = \
-                        np.flip(grid[:self.x + cols + 1, :self.y + 1], 1).T
-                elif self.x + cols >= env_x_size:
-                    obs[:self.y + 1, :env_x_size - self.x + cols] = \
-                        np.flip(grid[self.x - cols:, :self.y + 1], 1).T
+            if self.y <= 3:
+                if (self.x - int(obs_cols / 2)) < 0:
+                    obs[:self.y + 1, (int(obs_cols / 2)) - self.x:obs_cols + self.x] = \
+                        np.flip(grid[:self.x + (int(obs_cols / 2)) + 1, :self.y + 1], 1).T
+                elif self.x + int(obs_cols / 2) >= env_x_size:
+                    obs[:self.y + 1, :obs_cols - (int(obs_cols / 2) - (env_x_size - self.x - 1))] = \
+                        np.flip(grid[self.x - (int(obs_cols / 2)):, :self.y + 1], 1).T
                 else:
                     obs[:self.y + 1, :] = \
-                        np.flip(grid[self.x - cols:self.x + cols + 1, :self.y + 1], 1).T
+                        np.flip(grid[self.x - int(obs_cols / 2):self.x + int(obs_cols / 2) + 1, :self.y + 1], 1).T
             else:
-                if (self.x - cols) < 0:
-                    obs[:obs_rows, cols - self.x:obs_cols + self.x] = \
-                        np.flip(grid[:self.x + cols + 1, self.y - obs_rows + 1:self.y + 1], 1).T
-                elif self.x + cols >= env_x_size:
-                    obs[:obs_rows, :env_x_size - self.x + cols] = \
-                        np.flip(grid[self.x - cols:, self.y - obs_rows + 1:self.y + 1], 1).T
+                if (self.x - int(obs_cols / 2)) < 0:
+                    obs[:obs_rows, (int(obs_cols / 2)) - self.x:obs_cols + self.x] = \
+                        np.flip(grid[:self.x + (int(obs_cols / 2)) + 1, self.y - 4:self.y + 1], 1).T
+                elif self.x + int(obs_cols / 2) >= env_x_size:
+                    obs[:obs_rows, :obs_cols - (int(obs_cols / 2) - (env_x_size - self.x - 1))] = \
+                        np.flip(grid[self.x - (int(obs_cols / 2)):, self.y - 4:self.y + 1], 1).T
                 else:
                     obs[:obs_rows, :] = \
-                        np.flip(grid[self.x - cols:self.x + cols + 1, self.y - obs_rows + 1:self.y + 1], 1).T
+                        np.flip(grid[self.x - int(obs_cols / 2):self.x + int(obs_cols / 2) + 1, self.y - 4:self.y + 1], 1).T
         elif self.direction == 2:
             if self.x < obs_rows - 1:
-                if self.y <= 4:
-                    obs[:self.x + 1, :cols + self.y + 1] = \
-                        np.flip(grid[:self.x + 1, :self.y + obs_rows + 1])
-                elif self.y >= 7:
-                    obs[:self.x + 1, cols - (env_y_size - self.y - 1):] = \
-                        np.flip(grid[:self.x + 1, self.y - cols:])
-                else:
-                    obs[:self.x + 1, cols - (env_y_size - self.y - 1):cols + self.y + 1] = \
-                        np.flip(grid[:self.x + 1, :])
+                obs[:self.x + 1, self.y:self.y + 7] = np.flip(grid[:self.x + 1, :])
             else:
-                if self.y <= 4:
-                    obs[:, :cols + self.y + 1] = \
-                        np.flip(grid[self.x - obs_rows + 1:self.x + 1, :self.y + obs_rows + 1])
-                elif self.y >= 7:
-                    obs[:, cols - (env_y_size - self.y - 1):] = \
-                        np.flip(grid[self.x - obs_rows + 1:self.x + 1, self.y - cols:])
-                else:
-                    obs[:, cols - (env_y_size - self.y - 1):cols + self.y + 1] = \
-                        np.flip(grid[self.x - obs_rows + 1:self.x + 1, :])
-
+                obs[:, self.y:self.y + 7] = np.flip(grid[self.x - (obs_rows - 1):self.x + 1, :])
         elif self.direction == 3:
-            if self.y > obs_rows - 2:
-                if self.x - cols < 0:
-                    obs[:env_y_size - self.y, :self.x + cols + 1] = \
-                        np.flip(grid[:self.x + cols + 1, self.y:], 0).T
-                elif self.x + cols >= env_x_size:
-                    obs[:env_y_size - self.y, cols + 1 - env_x_size + self.x:obs_cols] = \
-                        np.flip(grid[self.x - cols:, self.y:], 0).T
+            if self.y >= 3:
+                if (self.x - int(obs_cols / 2)) < 0:
+                    obs[:env_y_size - self.y, :self.x + int(obs_cols / 2) + 1] = \
+                        np.flip(grid[:self.x + int(obs_cols / 2) + 1, self.y:], 0).T
+                elif self.x + int(obs_cols / 2) >= env_x_size:
+                    obs[:env_y_size - self.y, int(obs_cols / 2) + 1 - env_x_size + self.x:obs_cols] = \
+                        np.flip(grid[self.x - (int(obs_cols / 2)):, self.y:], 0).T
                 else:
                     obs[:env_y_size - self.y, :] = \
-                        np.flip(grid[self.x - cols:self.x + cols + 1, self.y:], 0).T
+                        np.flip(grid[self.x - int(obs_cols / 2):self.x + int(obs_cols / 2) + 1, self.y:], 0).T
             else:
-                if self.x - cols < 0:
-                    obs[:obs_rows, :self.x + cols + 1] = \
-                        np.flip(grid[:self.x + cols + 1, self.y:self.y + obs_rows], 0).T
-                elif self.x + cols >= env_x_size:
-                    obs[:obs_rows, cols + 1 - env_x_size + self.x:obs_cols] = \
-                        np.flip(grid[self.x - cols:, self.y:self.y + obs_rows], 0).T
+                if (self.x - int(obs_cols / 2)) < 0:
+                    obs[:obs_rows, :self.x + int(obs_cols / 2) + 1] = \
+                        np.flip(grid[:self.x + int(obs_cols / 2) + 1, self.y:self.y + 5], 0).T
+                elif self.x + int(obs_cols / 2) >= env_x_size:
+                    obs[:obs_rows, int(obs_cols / 2) + 1 - env_x_size + self.x:obs_cols] = \
+                            np.flip(grid[self.x - (int(obs_cols / 2)):, self.y:self.y + 5], 0).T
                 else:
                     obs[:obs_rows, :] = \
-                        np.flip(grid[self.x - cols:self.x + cols + 1, self.y:self.y + obs_rows], 0).T
+                        np.flip(grid[self.x - int(obs_cols / 2):self.x + int(obs_cols / 2) + 1, self.y:self.y + 5], 0).T
         else:
             assert self.direction in range(4), 'wrong direction'
         return np.flip(obs, 0)

@@ -23,9 +23,6 @@ print("UPDATE EVERY 3")
 print(50*'#')
 while episode < 6100:
     episode += 1
-    #if episode > 1000:
-     #   if episode < 1006:
-      #      env.render_env()
     state = env.reset()
     state_n = [np.reshape(i, [1, state_size]) for i in state]
     agent1_reward = 0
@@ -39,9 +36,6 @@ while episode < 6100:
     gameover = False
     while not gameover:
         step += 1
-        #if episode > 1000:
-         #   if episode < 1006:
-          #      env.render_env()
         action_n = [agent.get_action(state) for agent, state in zip(agents, state_n)]
         reward, next_state, done, untagged = env.step(action_n)
         next_state = [np.reshape(i, [1, state_size]) for i in next_state]

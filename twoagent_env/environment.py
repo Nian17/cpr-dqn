@@ -22,7 +22,7 @@ class GameEnv:
 
     def reset(self):
         self.agent1 = AgentObj(coordinates=(1, 3), type=0, name='agent1')
-        self.agent2 = AgentObj(coordinates=(23, 5), type=0, name='agent2', direction=1)
+        self.agent2 = AgentObj(coordinates=(23, 5), type=2, name='agent2', direction=1)
 
         agent_list = [self.agent1, self.agent2]
 

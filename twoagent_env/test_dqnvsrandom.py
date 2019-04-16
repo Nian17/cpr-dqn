@@ -19,6 +19,9 @@ print(50*'#')
 while episode < 6001:
     episode += 1
     state = env.reset()
+    if episode > 1000:
+        if episode < 1010:
+            env.render_env()
     state = np.reshape(state[0], [1, state_size])
     agent1_reward = 0
     agent2_reward = 0
@@ -28,6 +31,9 @@ while episode < 6001:
     gameover = False
     while not gameover:
         step += 1
+        if episode > 1000:
+            if episode < 1010:
+                env.render_env()
         action_1 = agent1.get_action(state)
         action_2 = np.random.randint(8)
         reward, next_state, done, untagged = env.step([action_1, action_2])

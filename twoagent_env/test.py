@@ -26,6 +26,7 @@ while episode < 6001:
     agent1_reward = 0
     agent2_reward = 0
     cumulative_reward = 0
+    untagged_sum = 0
 
     step = 0
     gameover = False
@@ -37,13 +38,14 @@ while episode < 6001:
         agent1_reward += reward[0]
         agent2_reward += reward[1]
         cumulative_reward += reward[0] + reward[1]
+        untagged_sum += untagged
         for i, agent in enumerate(agents):
             agent.train_model(action_n[i], state_n[i], next_state[i], reward[i], done)
             agent.update_epsilon()
         state_n = next_state
         terminal = (step >= max_episode_len)
         if done or terminal:
-            last_rewards.append([agent1_reward, agent2_reward, cumulative_reward, action_n[0], action_n[1], untagged])
+            last_rewards.append([agent1_reward, agent2_reward, cumulative_reward, action_n[0], action_n[1], untagged_sum])
             if episode % 3 == 0:
                 agent1.update_target_model()
                 agent2.update_target_model()

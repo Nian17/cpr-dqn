@@ -15,10 +15,10 @@ class DDQNAgent(RLDebugger):
         self.state_size = observation_space[0]
         self.action_size = action_space
         # hyper parameters
-        self.learning_rate = .000001
+        self.learning_rate = .00001
         self.model = self.build_model()
         self.target_model = self.model
-        self.gamma = 0.995
+        self.gamma = 0.9999
         self.epsilon_max = 1.
         self.epsilon = 1.
         self.t = 0
@@ -38,7 +38,7 @@ class DDQNAgent(RLDebugger):
         model.add(Dense(32, input_dim=self.state_size, activation='relu', trainable=trainable))
         model.add(Dense(32, activation='relu', trainable=trainable))
         model.add(Dense(self.action_size, activation='relu', trainable=trainable))
-        model.compile(loss='mse', optimizer=Adam(lr=self.learning_rate))
+        model.compile(loss='logcosh', optimizer=Adam(lr=self.learning_rate))
         model.summary()
 
         return model

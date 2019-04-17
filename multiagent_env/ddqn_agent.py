@@ -15,7 +15,7 @@ class DDQNAgent(RLDebugger):
         self.state_size = observation_space[0]
         self.action_size = action_space
         # hyper parameters
-        self.learning_rate = .00001
+        self.learning_rate = .000001
         self.model = self.build_model()
         self.target_model = self.model
         self.gamma = 0.995
@@ -25,8 +25,8 @@ class DDQNAgent(RLDebugger):
         self.epsilon_min = 0.1
         self.n_first_exploration_steps = 800
         self.epsilon_decay_len = 1000000
-        self.batch_size = 32
-        self.train_start = 64
+        self.batch_size = 8
+        self.train_start = 16
         # create replay memory using deque
         self.memory = deque(maxlen=100000)
         self.target_model = self.build_model(trainable=False)

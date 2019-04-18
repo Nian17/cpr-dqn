@@ -18,7 +18,8 @@ episode = 0
 max_episode_len = 1000
 print(50*'#')
 print("Printing agent's hyperparameters:")
-print('Learning rate:', agent1.learning_rate, 'Batch size:', agent1.batch_size, 'Eps decay len:', agent1.epsilon_decay_len)
+print('Learning rate:', agent1.learning_rate, 'Batch size:', agent1.batch_size, 'Eps decay len:', agent1.epsilon_decay_len,
+      'discount rate:', agent1.gamma)
 print("UPDATE EVERY 3")
 print(50*'#')
 while episode < 6100:

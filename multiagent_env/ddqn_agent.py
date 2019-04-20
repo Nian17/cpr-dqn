@@ -18,7 +18,7 @@ class DDQNAgent(RLDebugger):
         self.learning_rate = .00001
         self.model = self.build_model()
         self.target_model = self.model
-        self.gamma = 0.99
+        self.gamma = 0.995
         self.epsilon_max = 1.
         self.epsilon = 1.
         self.t = 0

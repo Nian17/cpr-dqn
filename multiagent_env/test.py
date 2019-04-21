@@ -20,7 +20,7 @@ print(50*'#')
 print("Printing agent's hyperparameters:")
 print('Learning rate:', agent1.learning_rate, 'Batch size:', agent1.batch_size, 'Eps decay len:', agent1.epsilon_decay_len,
       'discount rate:', agent1.gamma)
-print("UPDATE EVERY 3")
+print("UPDATE EVERY 10")
 print(50*'#')
 while episode < 6100:
     episode += 1
@@ -54,7 +54,7 @@ while episode < 6100:
         if done or terminal:
             last_rewards.append([agent1_reward, agent2_reward, agent3_reward, agent4_reward, cumulative_reward,
                                  action_n[0], action_n[1], action_n[2], action_n[3], untagged_sum, step])
-            if episode % 3 == 0:
+            if episode % 10 == 0:
                 agent1.update_target_model()
                 agent2.update_target_model()
                 agent3.update_target_model()

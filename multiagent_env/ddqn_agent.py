@@ -24,7 +24,7 @@ class DDQNAgent(RLDebugger):
         self.t = 0
         self.epsilon_min = 0.1
         self.n_first_exploration_steps = 800
-        self.epsilon_decay_len = 1000000
+        self.epsilon_decay_len = 500000
         self.batch_size = 8
         self.train_start = 16
         # create replay memory using deque
@@ -38,7 +38,7 @@ class DDQNAgent(RLDebugger):
         model.add(Dense(32, input_dim=self.state_size, activation='relu', trainable=trainable))
         model.add(Dense(32, activation='relu', trainable=trainable))
         model.add(Dense(self.action_size, activation='relu', trainable=trainable))
-        model.compile(loss='logcosh', optimizer=RMSprop(lr=self.learning_rate))
+        model.compile(loss='mse', optimizer=RMSprop(lr=self.learning_rate))
         model.summary()
 
         return model

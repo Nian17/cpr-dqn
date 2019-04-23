@@ -20,7 +20,7 @@ print(50*'#')
 print("Printing agent's hyperparameters:")
 print('Learning rate:', agent1.learning_rate, 'Batch size:', agent1.batch_size, 'Eps decay len:', agent1.epsilon_decay_len,
       'discount rate:', agent1.gamma)
-print("UPDATE EVERY 3, RMSprop, mse")
+print("UPDATE EVERY 10, RMSprop, mse")
 print(50*'#')
 while episode < 6100:
     episode += 1

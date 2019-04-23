@@ -38,7 +38,7 @@ class DDQNAgent(RLDebugger):
         model.add(Dense(32, input_dim=self.state_size, activation='relu', trainable=trainable))
         model.add(Dense(32, activation='relu', trainable=trainable))
         model.add(Dense(self.action_size, activation='relu', trainable=trainable))
-        model.compile(loss='logcosh', optimizer=RMSprop(lr=self.learning_rate))
+        model.compile(loss='mse', optimizer=Adam(lr=self.learning_rate))
         model.summary()
 
         return model
